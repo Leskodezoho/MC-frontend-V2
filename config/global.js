@@ -1,4 +1,3 @@
-// const API_URI = "http://18.207.217.163:5001";
-const API_URI = "http://localhost:3001";
-// const API_URI = "https://mc-backend-z65f.onrender.com";
+
+const API_URI = "https://business.medicalcertificate.in";
 export default API_URI;

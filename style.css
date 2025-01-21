@@ -206,7 +206,8 @@ input[type="radio"]:checked  + .tab {
   .tab {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
+    padding-left: 20px;
     height: 40px;
     width: 100%;
     font-size: 1rem;
@@ -231,5 +232,9 @@ input[type="radio"]:checked  + .tab {
   }
   .zsFormClass{
     width: fit-content !important;
+  }
+  footer{
+    font-size: 10px;
+    flex-direction: column;
   }
 }

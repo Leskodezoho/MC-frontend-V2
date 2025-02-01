@@ -70,11 +70,15 @@ document.getElementById('radio-2').addEventListener('change', function() {
 document.getElementById('radio-3').addEventListener('change', function() {
   showContent('content-3');
 });
-// document.getElementById('radio-4').addEventListener('change', function() {
-//   showContent('content-4');
-// });
+document.getElementById('radio-4').addEventListener('change', function() {
+  document.getElementById("CertificateFees").src = "";
+  document.getElementById("CertificateFees").src = "https://creatorapp.zohopublic.in/handworkstech/medical-certificate-issuance-system/page-embed/Certificate_Fees/kfNd1yruHT00ftDt25sNs58nNuWDDKYY37A4xFRZh3fEnXPUQqwDdguJJBgKuuref5n1GCNVvmPfXJxtsYPDf8ePJmpetJ3EnBW3?key=" + UniqueID;
+  
+  showContent('content-4');
+});
 document.getElementById('radio-5').addEventListener('change', function() {
   showContent('content-5');
+
 });
 document.getElementById('radio-6').addEventListener('change', function() {
   document.getElementById("Profile").src = "";

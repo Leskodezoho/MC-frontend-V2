@@ -2770,10 +2770,22 @@ console.log( x, y, imgWidth, imgHeight)
             pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
             console.log(`Added page ${pageNumber} to PDF`);
         }
-     
- 
-        // Save the PDF
-        const filename ='annotated_document-'+CrtNo+'.pdf';
+        const now = new Date();
+        const formattedDate = now.toLocaleString('en-GB', { 
+          year: '2-digit', 
+          month: '2-digit', 
+          day: '2-digit', 
+          hour: '2-digit', 
+          minute: '2-digit', 
+          second: '2-digit',
+          hour12: false 
+      }).replace(/[/,: ]/g, '_');
+      
+      const filename = `annotated_document_${formattedDate}-${CrtNo}.pdf`;
+      
+      console.log(filename);
+        // // Save the PDF
+        // const filename ='annotated_document-'+CrtNo+'.pdf';
         pdf.save(filename);
         console.log("PDF saved successfully");
 
@@ -2876,8 +2888,22 @@ async function uploadAnnotatedPDF() {
       // Create FormData to send with the request
       const formData = new FormData();
       formData.append('recordId', id); // Your record ID
-      
-      formData.append('filePath', pdfBlob, 'annotated_document-'+CrtNo+'.pdf'); // Append PDF Blob
+      const now = new Date();
+const formattedDate = now.toLocaleString('en-GB', { 
+    year: '2-digit', 
+    month: '2-digit', 
+    day: '2-digit', 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    second: '2-digit',
+    hour12: false 
+}).replace(/[/,: ]/g, '_');
+
+const filename = `annotated_document_${formattedDate}-${CrtNo}.pdf`;
+
+console.log(filename);
+
+      formData.append('filePath', pdfBlob, filename); // Append PDF Blob
 
       // Upload the file to the server
       const response = await fetch('https://mcb.medicalcertificate.in/upload', {

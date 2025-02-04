@@ -154,7 +154,13 @@ const searchParams = new URLSearchParams(window.location.search);
 
 
       if (response.status === 400) {
+        if(response.message=="Password reset successfully")
+      {
+        appendAlert(response.message + ` <a href="./sign_in.html">Sign In</a>`, "success");
+      }
+      else{
         appendAlert(response.message, "danger");
+      }
       } else {
 
         appendAlert(response.message + ` <a href="./sign_in.html">Sign In</a>`, "success");

@@ -2524,7 +2524,7 @@ function addImageAnnotation(x, y, imageSrc, pageNumber) {
 }
 function fetchImageAsDataURL(imageUrl) {
   return new Promise((resolve, reject) => {
-    fetch("http://localhost:3001/fetch-image?url=" + encodeURIComponent(imageUrl))
+    fetch("https://mcb.medicalcertificate.in/fetch-image?url=" + encodeURIComponent(imageUrl))
       .then(response => response.blob())
       .then(blob => {
         const reader = new FileReader();

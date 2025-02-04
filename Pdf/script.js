@@ -2654,7 +2654,7 @@ console.log( x, y, imgWidth, imgHeight)
         saveBtn.disabled = false;
     }
 }
-
+/////////////////high quality
 async function uploadAnnotatedPDF() {
   try {
       console.log("Starting PDF export...");
@@ -2672,8 +2672,13 @@ async function uploadAnnotatedPDF() {
       saveBtn.disabled = true;
 
       // Create a new jsPDF instance
-      const pdf = new window.jsPDF();
-      
+      // const pdf = new window.jsPDF();
+      const pdf = new window.jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4',
+          compress: true // Enables built-in compression
+      });
       // Process each page
       const pages = Array.from(pagesContainer.children);
       console.log(`Processing ${pages.length} pages...`);
@@ -2766,6 +2771,126 @@ async function uploadAnnotatedPDF() {
       saveBtn.disabled = false;
   }
 }
+/////////////////////----------low quality
+// async function uploadAnnotatedPDF() {
+//   try {
+//       console.log("Starting PDF export...");
+//       if (!currentPDF) {
+//           console.error("No PDF loaded");
+//           alert("Please load a PDF first");
+//           return;
+//       }
+
+//       // Show loading state
+//       document.body.style.cursor = 'wait';
+//       const saveBtn = document.getElementById('uploadPDF');
+//       const originalText = saveBtn.innerHTML;
+//       saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+//       saveBtn.disabled = true;
+
+//       // Create a new jsPDF instance with compression enabled
+//       const pdf = new window.jsPDF({
+//           orientation: 'portrait',
+//           unit: 'mm',
+//           format: 'a4',
+//           compress: true // Enables built-in compression
+//       });
+
+//       // Process each page
+//       const pages = Array.from(pagesContainer.children);
+//       console.log(`Processing ${pages.length} pages...`);
+
+//       for (let i = 0; i < pages.length; i++) {
+//           const pageWrapper = pages[i];
+//           const pageNumber = parseInt(pageWrapper.getAttribute('data-page'));
+//           console.log(`Processing page ${pageNumber}`);
+
+//           if (i > 0) {
+//               pdf.addPage();
+//           }
+
+//           // Get the canvas and annotation layer for this page
+//           const canvas = pageWrapper.querySelector('.pdf-canvas');
+//           const annotationLayer = pageWrapper.querySelector('.annotation-layer');
+
+//           // Create a new canvas to combine PDF content and annotations
+//           const pageCanvas = document.createElement('canvas');
+//           const context = pageCanvas.getContext('2d');
+          
+//           // Reduce canvas size to match PDF dimensions
+//           const scale = 0.5; // Adjust scale factor for better compression
+//           pageCanvas.width = canvas.width * scale;
+//           pageCanvas.height = canvas.height * scale;
+//           context.scale(scale, scale);
+
+//           // Draw the PDF page from the original canvas
+//           context.drawImage(canvas, 0, 0);
+
+//           // Capture annotations using html2canvas with reduced scale
+//           const annotationCanvas = await html2canvas(annotationLayer, {
+//               backgroundColor: null,
+//               scale: 1, // Reduce scale to avoid oversized images
+//           });
+
+//           // Draw annotations on top of the PDF page
+//           context.drawImage(annotationCanvas, 0, 0, annotationCanvas.width * scale, annotationCanvas.height * scale);
+
+//           // Convert the combined image to JPEG format with compression
+//           const imgData = pageCanvas.toDataURL('image/jpeg', 0.7); // JPEG with 70% quality
+
+//           // Calculate dimensions for PDF placement
+//           const pdfWidth = pdf.internal.pageSize.getWidth();
+//           const pdfHeight = pdf.internal.pageSize.getHeight();
+//           const imgProps = pdf.getImageProperties(imgData);
+//           const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
+//           const imgWidth = imgProps.width * ratio;
+//           const imgHeight = imgProps.height * ratio;
+//           const x = (pdfWidth - imgWidth) / 2;
+//           const y = (pdfHeight - imgHeight) / 2;
+
+//           // Add optimized image to PDF
+//           pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
+//           console.log(`Added page ${pageNumber} to PDF`);
+//       }
+
+//       // Convert PDF to Blob (file data)
+//       const pdfBlob = pdf.output('blob');
+
+//       // Create FormData to send with the request
+//       const formData = new FormData();
+//       formData.append('recordId', id); // Your record ID
+//       formData.append('filePath', pdfBlob, `annotated_document-${CrtNo}.pdf`); // Append PDF Blob
+
+//       // Upload the file to the server
+//       const response = await fetch('https://mcb.medicalcertificate.in/upload', {
+//           method: 'POST',
+//           body: formData,
+//       });
+
+//       // Check if the upload was successful
+//       if (response.ok) {
+//           console.log("PDF uploaded successfully");
+//           alert("PDF uploaded successfully");
+//       } else {
+//           console.error("Error uploading PDF");
+//           alert("Error uploading PDF. Please try again.");
+//       }
+
+//       // Reset button state
+//       saveBtn.innerHTML = originalText;
+//       saveBtn.disabled = false;
+//       document.body.style.cursor = 'default';
+
+//   } catch (error) {
+//       console.error("Error saving or uploading PDF:", error);
+//       alert("Error saving or uploading PDF. Please try again.");
+//       document.body.style.cursor = 'default';
+//       const saveBtn = document.getElementById('uploadPDF');
+//       saveBtn.innerHTML = '<i class="fas fa-upload"></i>';
+//       saveBtn.disabled = false;
+//   }
+// }
+
 
 // Add event listener for save button
 uploadPDFBtn.addEventListener('click', uploadAnnotatedPDF);

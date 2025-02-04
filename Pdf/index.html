@@ -99,7 +99,7 @@
             </div>
         </div>
     </div>
-    <div id="imageModal" class="modal">
+    <!-- <div id="imageModal" class="modal">
         <div class="modal-content">
             <h3>Upload Image</h3>
             <div class="image-upload-container">
@@ -113,7 +113,30 @@
                 <button id="closeImage">Cancel</button>
             </div>
         </div>
+    </div> -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <h3>Upload Image</h3>
+            <div class="image-upload-container">
+                <input type="file" id="imageFile" accept="image/*" />
+                <div class="assets">
+                    <p>Quick Assets</p>
+                   <!-- <img id="loadImageURL" src="https://workdrive.zohopublic.in/external/7ed1d4c20f7d72d109ce573d3b486dc7a74270bc189d03466b4fdef37bbe0d70/download?directDownload=True" alt="" srcset=""> -->
+                    <!-- <img id="loadImageURL" src="https://workdrive.zohopublic.in/external/7ed1d4c20f7d72d109ce573d3b486dc7a74270bc189d03466b4fdef37bbe0d70/download?directDownload=True" alt="" srcset=""> -->
+                <!-- <input type="text" id="imageURL" placeholder="Enter image URL" /> -->
+                <!-- <button id="loadImageURL" data-imgURL="https://workdrive.zohopublic.in/external/7ed1d4c20f7d72d109ce573d3b486dc7a74270bc189d03466b4fdef37bbe0d70/download?directDownload=True">Stamp and Signature</button> -->
+            </div>
+                <div class="image-preview-container">
+                    <img id="imagePreview" src="" alt="Preview" style="display: none;" />
+                </div>
+            </div>
+            <div class="image-tools">
+                <button id="uploadImage">Upload</button>
+                <button id="closeImage">Cancel</button>
+            </div>
+        </div>
     </div>
+    
     <div id="previewModal" class="modal">
         <div class="modal-content preview-modal">
             <div class="preview-header">
@@ -130,6 +153,6 @@
         </div>
     </div>
     <div id="notification" class="notification" style="display: none;"></div>
-    <script src="script.js"></script>
+    <script  type="module"  src="script.js"></script>
 </body>
 </html>

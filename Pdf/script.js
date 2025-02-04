@@ -47,6 +47,47 @@ const zoomLevelSpan = document.querySelector('.zoom-level');
 const params = new URLSearchParams(window.location.search);
 const id = params.get('ID');
 const CrtNo = params.get('CrtNo');
+const sl_sign = params.get('slsn');
+const seal = params.get('sl');
+const sign = params.get('sn');
+
+const assetsContainer = document.querySelector('.assets');
+
+function createButton(idValue) {
+  let button = document.createElement("button");
+  button.className = "loadImagebtn"; // Use class instead of ID to prevent duplication
+  button.setAttribute("data-imgURL", `https://workdrive.zohopublic.in/external/${idValue}/download?directDownload=True`);
+  button.addEventListener("click", () => {
+    const url = button.dataset.imgurl;
+    loadImg(url);
+  });
+  let img = document.createElement("img");
+  img.className = "loadImageURL";
+  img.src = `https://workdrive.zohopublic.in/external/${idValue}/download?directDownload=True`;
+  img.alt = "";
+  
+  button.appendChild(img);
+  return button;
+}
+
+if (assetsContainer) {
+  if (sl_sign) {
+    assetsContainer.appendChild(createButton(sl_sign));
+  }
+  
+  if (seal) {
+    assetsContainer.appendChild(createButton(seal));
+  }
+
+  if (sign) {
+     
+    
+    assetsContainer.appendChild(createButton(sign));
+  }
+} else {
+  console.error("Element with class 'assets' not found.");
+}
+
 
 // State variables
 let currentPDF = null;
@@ -1673,51 +1714,51 @@ function addRoundAnnotation(x, y, pageNumber) {
 }
 
 // Function to add cross annotation
-function addCrossAnnotation(x, y, pageNumber) {
-  console.log("addCrossAnnotation2");
+// function addCrossAnnotation(x, y, pageNumber) {
+//   console.log("addCrossAnnotation2");
   
-    const annotationLayerDiv = document.querySelector(`.annotation-layer[data-page="${pageNumber}"]`);
-    if (!annotationLayerDiv) return;
+//     const annotationLayerDiv = document.querySelector(`.annotation-layer[data-page="${pageNumber}"]`);
+//     if (!annotationLayerDiv) return;
 
-    const cross = document.createElement('div');
-    cross.className = 'annotation cross-annotation';
-    cross.style.left = x + 'px';
-    cross.style.top = y + 'px';
-    cross.setAttribute('data-page', pageNumber);
+//     const cross = document.createElement('div');
+//     cross.className = 'annotation cross-annotation';
+//     cross.style.left = x + 'px';
+//     cross.style.top = y + 'px';
+//     cross.setAttribute('data-page', pageNumber);
     
-    // Add initial fade-in animation
-    cross.style.opacity = '0';
-    cross.style.transition = 'opacity 0.3s ease';
+//     // Add initial fade-in animation
+//     cross.style.opacity = '0';
+//     cross.style.transition = 'opacity 0.3s ease';
 
-    // Add cross lines
-    const line1 = document.createElement('div');
-    line1.className = 'cross-line';
-    const line2 = document.createElement('div');
-    line2.className = 'cross-line rotated';
-    cross.appendChild(line1);
-    cross.appendChild(line2);
+//     // Add cross lines
+//     const line1 = document.createElement('div');
+//     line1.className = 'cross-line';
+//     const line2 = document.createElement('div');
+//     line2.className = 'cross-line rotated';
+//     cross.appendChild(line1);
+//     cross.appendChild(line2);
 
-    // Create delete button
-    const deleteBtn = createDeleteButton();
-    cross.appendChild(deleteBtn);
+//     // Create delete button
+//     const deleteBtn = createDeleteButton();
+//     cross.appendChild(deleteBtn);
 
-    // Make annotation draggable and resizable
-    makeDraggable(cross);
-    makeResizable(cross);
+//     // Make annotation draggable and resizable
+//     makeDraggable(cross);
+//     makeResizable(cross);
 
-    // Add to annotation layer
-    annotationLayerDiv.appendChild(cross);
+//     // Add to annotation layer
+//     annotationLayerDiv.appendChild(cross);
     
-    // Trigger fade-in
-    setTimeout(() => {
-        cross.style.opacity = '1';
-    }, 50);
+//     // Trigger fade-in
+//     setTimeout(() => {
+//         cross.style.opacity = '1';
+//     }, 50);
     
-    saveState();
-    currentTool = "";
-    crossTool.classList.remove("active");
-    return cross;
-}
+//     saveState();
+//     currentTool = "";
+//     crossTool.classList.remove("active");
+//     return cross;
+// }
 
 // Function to add rectangle annotation
 function addRectangleAnnotation(x, y, pageNumber) {
@@ -1758,75 +1799,75 @@ function addRectangleAnnotation(x, y, pageNumber) {
 }
 
 // Function to add image annotation
-function addImageAnnotation(x, y, imageSrc, pageNumber) {
-  alert ("Image");
-    const annotationLayerDiv = document.querySelector(`.annotation-layer[data-page="${pageNumber}"]`);
-    if (!annotationLayerDiv) return;
+// function addImageAnnotation(x, y, imageSrc, pageNumber) {
+//   alert ("Image");
+//     const annotationLayerDiv = document.querySelector(`.annotation-layer[data-page="${pageNumber}"]`);
+//     if (!annotationLayerDiv) return;
 
-    console.log(`Adding image annotation on page ${pageNumber} at (${x}, ${y})`);
+//     console.log(`Adding image annotation on page ${pageNumber} at (${x}, ${y})`);
     
-    // Create container
-    const container = document.createElement('div');
-    container.className = 'annotation-container image-container';
-    container.style.position = 'absolute';
-    container.style.left = x + 'px';
-    container.style.top = y + 'px';
-    container.setAttribute('data-page', pageNumber);
+//     // Create container
+//     const container = document.createElement('div');
+//     container.className = 'annotation-container image-container';
+//     container.style.position = 'absolute';
+//     container.style.left = x + 'px';
+//     container.style.top = y + 'px';
+//     container.setAttribute('data-page', pageNumber);
     
-    // Create image element
-    const img = document.createElement('img');
-    img.src = imageSrc;
-    img.style.width = '100%';
-    img.style.height = '100%';
-    img.style.objectFit = 'contain';
-    container.appendChild(img);
+//     // Create image element
+//     const img = document.createElement('img');
+//     img.src = imageSrc;
+//     img.style.width = '100%';
+//     img.style.height = '100%';
+//     img.style.objectFit = 'contain';
+//     container.appendChild(img);
     
-    // Create delete button
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'delete-btn';
-    deleteBtn.innerHTML = '×';
-    deleteBtn.title = 'Delete image';
-    deleteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        container.remove();
-        saveState();
-    });
+//     // Create delete button
+//     const deleteBtn = document.createElement('button');
+//     deleteBtn.className = 'delete-btn';
+//     deleteBtn.innerHTML = '×';
+//     deleteBtn.title = 'Delete image';
+//     deleteBtn.addEventListener('click', (e) => {
+//         e.stopPropagation();
+//         container.remove();
+//         saveState();
+//     });
 
-    // Create resize handle
-    // const resizer = document.createElement('div');
-    // resizer.className = 'resizer';
-    // resizer.title = 'Drag to resize';
+//     // Create resize handle
+//     // const resizer = document.createElement('div');
+//     // resizer.className = 'resizer';
+//     // resizer.title = 'Drag to resize';
 
-    // Create rotate button
-    const rotateBtn = document.createElement('button');
-    rotateBtn.className = 'rotate-btn';
-    rotateBtn.innerHTML = '↻';
-    rotateBtn.title = 'Rotate image';
-    let rotation = 0;
-    rotateBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        rotation = (rotation + 90) % 360;
-        img.style.transform = `rotate(${rotation}deg)`;
-        saveState();
-    });
+//     // Create rotate button
+//     const rotateBtn = document.createElement('button');
+//     rotateBtn.className = 'rotate-btn';
+//     rotateBtn.innerHTML = '↻';
+//     rotateBtn.title = 'Rotate image';
+//     let rotation = 0;
+//     rotateBtn.addEventListener('click', (e) => {
+//         e.stopPropagation();
+//         rotation = (rotation + 90) % 360;
+//         img.style.transform = `rotate(${rotation}deg)`;
+//         saveState();
+//     });
 
-    // Add elements to container
-    container.appendChild(img);
-    container.appendChild(deleteBtn);
-    container.appendChild(rotateBtn);
-    // container.appendChild(resizer);
+//     // Add elements to container
+//     container.appendChild(img);
+//     container.appendChild(deleteBtn);
+//     container.appendChild(rotateBtn);
+//     // container.appendChild(resizer);
 
-    // Make container draggable
-    makeDraggable(container);
-    makeResizable(container);
+//     // Make container draggable
+//     makeDraggable(container);
+//     makeResizable(container);
 
-    // Add to annotation layer
-    annotationLayerDiv.appendChild(container);
-    saveState();
-    currentTool = null;
-    imageTool.classList.remove("active");
-    return container;
-}
+//     // Add to annotation layer
+//     annotationLayerDiv.appendChild(container);
+//     saveState();
+//     currentTool = null;
+//     imageTool.classList.remove("active");
+//     return container;
+// }
 
 // Image tool click handler
 imageTool.addEventListener("click", () => {
@@ -1894,20 +1935,70 @@ imageFile.addEventListener("change", (e) => {
   }
 });
 
+const imageFileInput = document.getElementById("imageFile");
+const imageURLInput = document.getElementById("imageURL");
+// const loadImageURLBtn = document.getElementById("loadImagebtn");
+// const imagePreview = document.getElementById("imagePreview");
+// const uploadImageBtn = document.getElementById("uploadImage");
+// const imageModal = document.getElementById("imageModal");
+
+// let selectedImage = null;
+
+// Handle image file upload
+imageFileInput.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            selectedImage = e.target.result;
+            imagePreview.src = selectedImage;
+            imagePreview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Handle image URL input
+function loadImg(url) {
+  
+
+  
+    console.log(url);
+    
+    if (url) {
+        selectedImage = url;
+        imagePreview.src = selectedImage;
+        imagePreview.style.display = "block";
+    }
+};
+
 // Upload image button handler
 uploadImageBtn.addEventListener("click", () => {
-  if (selectedImage) {
-    const x = parseFloat(imageModal.dataset.clickX);
-    const y = parseFloat(imageModal.dataset.clickY);
-    const pageNumber = parseInt(imageModal.dataset.pageNumber);
-    
-    addImageAnnotation(x, y, selectedImage, pageNumber);
-    imageModal.style.display = "none";
-    currentTool = null;
-    imageTool.classList.remove("active");
-    selectedImage = null;
-  }
+    if (selectedImage) {
+        const x = parseFloat(imageModal.dataset.clickX);
+        const y = parseFloat(imageModal.dataset.clickY);
+        const pageNumber = parseInt(imageModal.dataset.pageNumber);
+        
+        addImageAnnotation(x, y, selectedImage, pageNumber);
+        imageModal.style.display = "none";
+        selectedImage = null;
+    }
 });
+
+// Upload image button handler
+// uploadImageBtn.addEventListener("click", () => {
+//   if (selectedImage) {
+//     const x = parseFloat(imageModal.dataset.clickX);
+//     const y = parseFloat(imageModal.dataset.clickY);
+//     const pageNumber = parseInt(imageModal.dataset.pageNumber);
+    
+//     addImageAnnotation(x, y, selectedImage, pageNumber);
+//     imageModal.style.display = "none";
+//     currentTool = null;
+//     imageTool.classList.remove("active");
+//     selectedImage = null;
+//   }
+// });
 
 // Close image modal
 closeImageBtn.addEventListener("click", () => {
@@ -2368,7 +2459,18 @@ function addImageAnnotation(x, y, imageSrc, pageNumber) {
 
     // Create image element
     const img = document.createElement('img');
-    img.src = imageSrc;
+    if (imageSrc.startsWith("http")) {
+      // Convert remote image to data URL
+      fetchImageAsDataURL(imageSrc).then(dataUrl => {
+          img.src = dataUrl;
+          saveState();
+      }).catch(error => {
+          console.error("Error loading remote image:", error);
+      });
+  } else {
+      img.src = imageSrc; // Local file upload (already a data URL)
+  }
+    // img.src = imageSrc;
     img.style.width = '100%';
     img.style.height = '100%';
     img.style.objectFit = 'contain';
@@ -2420,42 +2522,77 @@ function addImageAnnotation(x, y, imageSrc, pageNumber) {
     imageTool.classList.remove("active");
     return container;
 }
+function fetchImageAsDataURL(imageUrl) {
+  return new Promise((resolve, reject) => {
+    fetch("http://localhost:3001/fetch-image?url=" + encodeURIComponent(imageUrl))
+      .then(response => response.blob())
+      .then(blob => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          resolve(reader.result); // Ensure the Promise resolves correctly
+        };
+        reader.readAsDataURL(blob);
+      })
+      .catch(error => {
+        console.error("Error fetching image:", error);
+        reject(error);
+      });
+  });
+}
+
+// function fetchImageAsDataURL(imageUrl) {
+//   return new Promise((resolve, reject) => {
+//     fetch("http://localhost:3001/fetch-image?url="+imageUrl)
+//     .then(response => response.blob())
+//     .then(blob => {
+//         const reader = new FileReader();
+//         reader.onloadend = () => {
+//           console.log(reader.result)
+//         return reader.result;
+//         };
+
+//         reader.readAsDataURL(blob);
+//         rtu
+//     })
+//     .catch(error => console.error("Error fetching image:", error));
+//   });
+// }
 
 // Function to add round annotation
-function addRoundAnnotation(x, y, pageNumber) {
-    const annotationLayerDiv = document.querySelector(`.annotation-layer[data-page="${pageNumber}"]`);
-    if (!annotationLayerDiv) return;
+// function addRoundAnnotation(x, y, pageNumber) {
+//     const annotationLayerDiv = document.querySelector(`.annotation-layer[data-page="${pageNumber}"]`);
+//     if (!annotationLayerDiv) return;
 
-    const round = document.createElement('div');
-    round.className = 'annotation round-annotation';
-    round.style.left = x + 'px';
-    round.style.top = y + 'px';
-    round.setAttribute('data-page', pageNumber);
+//     const round = document.createElement('div');
+//     round.className = 'annotation round-annotation';
+//     round.style.left = x + 'px';
+//     round.style.top = y + 'px';
+//     round.setAttribute('data-page', pageNumber);
     
-    // Add initial fade-in animation
-    round.style.opacity = '0';
-    round.style.transition = 'opacity 0.3s ease';
+//     // Add initial fade-in animation
+//     round.style.opacity = '0';
+//     round.style.transition = 'opacity 0.3s ease';
 
-    // Create delete button
-    const deleteBtn = createDeleteButton();
-    round.appendChild(deleteBtn);
+//     // Create delete button
+//     const deleteBtn = createDeleteButton();
+//     round.appendChild(deleteBtn);
 
-    // Make annotation draggable and resizable
-    makeDraggable(round);
-    makeResizable(round);
+//     // Make annotation draggable and resizable
+//     makeDraggable(round);
+//     makeResizable(round);
 
-    // Add to annotation layer
-    annotationLayerDiv.appendChild(round);
+//     // Add to annotation layer
+//     annotationLayerDiv.appendChild(round);
     
-    // Trigger fade-in
-    setTimeout(() => {
-        round.style.opacity = '1';
-    }, 50);
-    currentTool = "";
-    roundTool.classList.remove("active");
-    saveState();
-    return round;
-}
+//     // Trigger fade-in
+//     setTimeout(() => {
+//         round.style.opacity = '1';
+//     }, 50);
+//     currentTool = "";
+//     roundTool.classList.remove("active");
+//     saveState();
+//     return round;
+// }
 
 // Function to add cross annotation
 function addCrossAnnotation(x, y, pageNumber) {
@@ -3368,29 +3505,29 @@ colorPicker.addEventListener("change", () => {
 });
 
 // Function to clear all annotations
-function clearAllAnnotations() {
-    const annotationLayers = document.querySelectorAll('.annotation-layer');
+// function clearAllAnnotations() {
+//     const annotationLayers = document.querySelectorAll('.annotation-layer');
     
-    annotationLayers.forEach(layer => {
-        const annotations = layer.querySelectorAll('.round-annotation, .cross-annotation, .rectangle-annotation');
+//     annotationLayers.forEach(layer => {
+//         const annotations = layer.querySelectorAll('.round-annotation, .cross-annotation, .rectangle-annotation');
         
-        annotations.forEach(annotation => {
-            // Add fade-out animation
-            annotation.style.transition = 'opacity 0.3s ease';
-            annotation.style.opacity = '0';
-        });
+//         annotations.forEach(annotation => {
+//             // Add fade-out animation
+//             annotation.style.transition = 'opacity 0.3s ease';
+//             annotation.style.opacity = '0';
+//         });
         
-        // Remove after animation
-        setTimeout(() => {
-            annotations.forEach(annotation => {
-                if (annotation.parentElement) {
-                    annotation.parentElement.removeChild(annotation);
-                }
-            });
-            saveState();
-        }, 300);
-    });
-}
+//         // Remove after animation
+//         setTimeout(() => {
+//             annotations.forEach(annotation => {
+//                 if (annotation.parentElement) {
+//                     annotation.parentElement.removeChild(annotation);
+//                 }
+//             });
+//             saveState();
+//         }, 300);
+//     });
+// }
 
 // Add event listener for clear all button
 // document.getElementById('clearAll').addEventListener('click', () => {
@@ -3409,4 +3546,50 @@ function showNotification(message, duration = 5000) {
         notification.style.display = 'none';
     }, duration);
 }
-fetchAndLoadPDF();
+/////////////////////////////////////////////////
+import home from "../controllers/login.js";
+var UniqueID="";
+//////////////////----------home
+
+  // const signinForm = document.getElementById("signin-form");
+const token = localStorage.getItem("token");
+async function homefun(params) {
+  try{
+  
+
+  // // Hide the form and show the spinner
+  // signinForm.style.display = "none";
+  freaze.style.display = "flex";
+  let resp = await home(params);
+    console.log(resp);
+   
+  if (resp.token) {
+if(resp.uniqueId!=null&&resp.uniqueId!=""&&resp.status=="Active"){
+   UniqueID+=resp.uniqueId;
+   fetchAndLoadPDF();
+  }
+else{
+  alert ("Your profile is inactive. Please contact the administrator.");
+  window.location.href = "../sign_in.html";
+  localStorage.removeItem("token");
+}
+  } else {
+    alert("Invalid token");
+    window.location.href = "../sign_in.html";
+    localStorage.removeItem("token");
+  }
+}
+catch(err){
+  console.log(err);
+  alert("Something went wrong");
+  window.location.href = "../sign_in.html";
+  localStorage.removeItem("token");
+}
+
+}
+if (token) {
+  homefun(token);
+} else {
+  window.location.href = "../sign_in.html";
+}
+

@@ -177,7 +177,7 @@ body {
 
 #imagePreview {
     max-width: 100%;
-    max-height: 300px;
+    max-height: 200px;
     border-radius: var(--border-radius);
     display: none;
 }
@@ -992,6 +992,29 @@ body {
 }
 .preview-controls{
     display: none;
+}
+.loadImageURL{
+    width: 70px;
+    height: 50px;
+    object-fit: contain;
+}
+.loadImagebtn{
+    background: none;
+    border: 1px solid gray;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+.assets{
+    text-align: left;
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+}
+.assets p{
+    margin: none;
+}
+#imageFile{
+    margin-bottom: 12px;
 }
   /* Responsive Design */
 @media (max-width: 768px) {

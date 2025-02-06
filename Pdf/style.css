@@ -62,7 +62,9 @@ body {
     justify-content: center;
 }
 .tools .tool-btn span{
-   display: none; 
+   display: block
+   
+   ; 
 }
 
 .tool-btn {
@@ -1055,4 +1057,7 @@ right: 20%;
         border: none;
         background-color: none;
     }
+    .tools .tool-btn span{
+        display: none; 
+     }
 }

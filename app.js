@@ -77,6 +77,9 @@ document.getElementById('radio-4').addEventListener('change', function() {
   showContent('content-4');
 });
 document.getElementById('radio-5').addEventListener('change', function() {
+  document.getElementById("Support").src = "";
+  document.getElementById("Support").src = "https://creatorapp.zohopublic.in/handworkstech/medical-certificate-issuance-system/form-embed/Ticket_form/NCAQ9z1rs6OV29n92sMTBsOmfUEnt9fp7ks9frOUKh674D20Z3qvnW1vYEeNSY7k072PtuU76deskHxjkQPUgCJeuNPKFRJpU5mp?Key=" + UniqueID;
+  
   showContent('content-5');
 
 });

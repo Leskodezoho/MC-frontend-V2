@@ -1,4 +1,5 @@
 // Global variables
+
 const pdfFile = document.getElementById("pdfFile");
 const pagesContainer = document.getElementById("pagesContainer");
 const dragDropArea = document.getElementById("dragDropArea");
@@ -45,7 +46,7 @@ const fitWidthBtn = document.getElementById('fitWidth');
 const zoomLevelSpan = document.querySelector('.zoom-level');
 // Create a URLSearchParams object from the current URL
 const params = new URLSearchParams(window.location.search);
-const id = params.get('ID');
+var id = params.get('ID');
 const CrtNo = params.get('CrtNo');
 const sl_sign = params.get('slsn');
 const seal = params.get('sl');
@@ -113,7 +114,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
 // Initialize jsPDF
 window.jsPDF = window.jspdf.jsPDF;
-
+// window.addEventListener("beforeunload", function (e) {
+//   e.preventDefault();
+ 
+// });
 // Initialize canvas contexts
 const signatureCtx = signatureCanvas.getContext("2d");
 const freaze = document.getElementById("freaze");
@@ -121,25 +125,32 @@ const freaze = document.getElementById("freaze");
 // Function to download a certificate from a third-party server
 
 async function downloadCertificate() {
+  id = params.get('ID');
+
   console.log("downloadCertificate");
+  console.log(id);
   
     freaze.style.display = "flex";
   try {
     console.log('Starting PDF download');
    
-    const response = await fetch("http://localhost:5001/getcrmcustom/"+id, {
+    const response = await fetch("https://mcb.medicalcertificate.in/getcrmcustom/"+id, {
       method: "GET",
       headers: {
         'Accept': 'application/pdf'
       }
     });
+console.log(response);
 
     if (response.ok) {
       const data = await response.blob();
       console.log("Download successful, PDF blob size:", data.size);
       return data;
     } else {
+
       console.error("Failed to fetch certificate:", response.statusText);
+    alert ("Failed to load the file; make sure the file is available.")
+
     }
   } catch (exception) {
     console.error("Error occurred:", exception);
@@ -2046,7 +2057,12 @@ window.addEventListener('DOMContentLoaded', () => {
     addSafeEventListener('undoBtn', 'click', undo);
     addSafeEventListener('redoBtn', 'click', redo);
     addSafeEventListener('savePDF', 'click', saveAnnotatedPDF);
-    addSafeEventListener('uploadPDF', 'click', uploadAnnotatedPDF);
+// addSafeEventListener('uploadPDF', 'submit', (e) => {
+//   console.log("submit");
+  
+// e.preventDefault();
+//   uploadAnnotatedPDF();
+// });
 
 });
 
@@ -2543,59 +2559,6 @@ function fetchImageAsDataURL(imageUrl) {
   });
 }
 
-// function fetchImageAsDataURL(imageUrl) {
-//   return new Promise((resolve, reject) => {
-//     fetch("http://localhost:3001/fetch-image?url="+imageUrl)
-//     .then(response => response.blob())
-//     .then(blob => {
-//         const reader = new FileReader();
-//         reader.onloadend = () => {
-//           console.log(reader.result)
-//         return reader.result;
-//         };
-
-//         reader.readAsDataURL(blob);
-//         rtu
-//     })
-//     .catch(error => console.error("Error fetching image:", error));
-//   });
-// }
-
-// Function to add round annotation
-// function addRoundAnnotation(x, y, pageNumber) {
-//     const annotationLayerDiv = document.querySelector(`.annotation-layer[data-page="${pageNumber}"]`);
-//     if (!annotationLayerDiv) return;
-
-//     const round = document.createElement('div');
-//     round.className = 'annotation round-annotation';
-//     round.style.left = x + 'px';
-//     round.style.top = y + 'px';
-//     round.setAttribute('data-page', pageNumber);
-    
-//     // Add initial fade-in animation
-//     round.style.opacity = '0';
-//     round.style.transition = 'opacity 0.3s ease';
-
-//     // Create delete button
-//     const deleteBtn = createDeleteButton();
-//     round.appendChild(deleteBtn);
-
-//     // Make annotation draggable and resizable
-//     makeDraggable(round);
-//     makeResizable(round);
-
-//     // Add to annotation layer
-//     annotationLayerDiv.appendChild(round);
-    
-//     // Trigger fade-in
-//     setTimeout(() => {
-//         round.style.opacity = '1';
-//     }, 50);
-//     currentTool = "";
-//     roundTool.classList.remove("active");
-//     saveState();
-//     return round;
-// }
 
 // Function to add cross annotation
 function addCrossAnnotation(x, y, pageNumber) {
@@ -2679,16 +2642,7 @@ async function loadPDF(file) {
 undoBtn.addEventListener("click", undo);
 redoBtn.addEventListener("click", redo);
 
-// Clear all annotations
-// clearAllBtn.addEventListener("click", () => {
-//   if (confirm("Are you sure you want to clear all annotations?")) {
-//     Array.from(pagesContainer.children).forEach((pageWrapper) => {
-//       const annotationLayerDiv = pageWrapper.querySelector('.annotation-layer');
-//       annotationLayerDiv.innerHTML = "";
-//     });
-//     saveState();
-//   }
-// });
+
 
 // Function to save annotated PDF
 async function saveAnnotatedPDF() {
@@ -2808,6 +2762,7 @@ console.log( x, y, imgWidth, imgHeight)
 }
 /////////////////high quality
 async function uploadAnnotatedPDF() {
+   
   try {
       console.log("Starting PDF export...");
       if (!currentPDF) {
@@ -2913,7 +2868,7 @@ console.log(pdfBlob instanceof Blob); // should be true
 formData.append('filePath', pdfBlob, filename);
 
 try {
-  const response = await fetch(`http://localhost:5001/uploadcrm/${id}`, {
+  const response = await fetch(`https://mcb.medicalcertificate.in/uploadcrm/${id}`, {
     method: 'POST',
     body: formData
   });
@@ -2921,6 +2876,8 @@ try {
   if (response.ok) {
     console.log("PDF uploaded successfully");
     alert("PDF uploaded successfully");
+    window.close();
+
   } else {
     const err = await response.text();
     console.error("Upload failed:", err);
@@ -2930,6 +2887,62 @@ try {
   console.error("Network error:", error);
   alert("Network error upload: " + error.message);
 }
+
+
+// const formData = new FormData();
+// const now = new Date();
+// const formattedDate = now.toLocaleString('en-GB', { 
+//   year: '2-digit', 
+//   month: '2-digit', 
+//   day: '2-digit', 
+//   hour: '2-digit', 
+//   minute: '2-digit', 
+//   second: '2-digit',
+//   hour12: false 
+// }).replace(/[/,: ]/g, '_');
+
+// const filename = `annotated_document_${formattedDate}-${CrtNo}.pdf`;
+
+// console.log("Uploading filename:", filename);
+// console.log(pdfBlob instanceof Blob); // Should be true
+
+// formData.append('filePath', pdfBlob, filename);
+
+// try {
+//   axios.post(
+//     `https://mcb.medicalcertificate.in/uploadcrm/${id}`,
+//     formData,
+//     {
+//       headers: {
+//         'Content-Type': 'multipart/form-data',
+//       },
+      
+//     }
+//   ).then(function (response) {
+//       console.log("PDF uploaded successfully:", response.data);
+//   alert("PDF uploaded successfully");
+//   })
+//   .catch(function (error) {
+//     console.log(error);
+//   });
+
+
+// window.close();
+// } catch (error) {
+//   if (error.response) {
+//     // Server responded with a status other than 2xx
+//     console.error("Upload failed:", error.response.data);
+//     alert("Upload failed: " + (error.response.data?.message || "Server error"));
+//   } else if (error.request) {
+//     // No response from server
+//     console.error("No response from server:", error.request);
+//     alert("No response from server");
+//   } else {
+//     // Something else went wrong
+//     console.error("Error setting up request:", error.message);
+//     alert("Upload error: " + error.message);
+//   }
+// }
 
 
       // Reset button state
@@ -2948,129 +2961,15 @@ try {
       saveBtn.disabled = false;
   }
 }
-/////////////////////----------low quality
-// async function uploadAnnotatedPDF() {
-//   try {
-//       console.log("Starting PDF export...");
-//       if (!currentPDF) {
-//           console.error("No PDF loaded");
-//           alert("Please load a PDF first");
-//           return;
-//       }
-
-//       // Show loading state
-//       document.body.style.cursor = 'wait';
-//       const saveBtn = document.getElementById('uploadPDF');
-//       const originalText = saveBtn.innerHTML;
-//       saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-//       saveBtn.disabled = true;
-
-//       // Create a new jsPDF instance with compression enabled
-//       const pdf = new window.jsPDF({
-//           orientation: 'portrait',
-//           unit: 'mm',
-//           format: 'a4',
-//           compress: true // Enables built-in compression
-//       });
-
-//       // Process each page
-//       const pages = Array.from(pagesContainer.children);
-//       console.log(`Processing ${pages.length} pages...`);
-
-//       for (let i = 0; i < pages.length; i++) {
-//           const pageWrapper = pages[i];
-//           const pageNumber = parseInt(pageWrapper.getAttribute('data-page'));
-//           console.log(`Processing page ${pageNumber}`);
-
-//           if (i > 0) {
-//               pdf.addPage();
-//           }
-
-//           // Get the canvas and annotation layer for this page
-//           const canvas = pageWrapper.querySelector('.pdf-canvas');
-//           const annotationLayer = pageWrapper.querySelector('.annotation-layer');
-
-//           // Create a new canvas to combine PDF content and annotations
-//           const pageCanvas = document.createElement('canvas');
-//           const context = pageCanvas.getContext('2d');
-          
-//           // Reduce canvas size to match PDF dimensions
-//           const scale = 0.5; // Adjust scale factor for better compression
-//           pageCanvas.width = canvas.width * scale;
-//           pageCanvas.height = canvas.height * scale;
-//           context.scale(scale, scale);
-
-//           // Draw the PDF page from the original canvas
-//           context.drawImage(canvas, 0, 0);
-
-//           // Capture annotations using html2canvas with reduced scale
-//           const annotationCanvas = await html2canvas(annotationLayer, {
-//               backgroundColor: null,
-//               scale: 1, // Reduce scale to avoid oversized images
-//           });
-
-//           // Draw annotations on top of the PDF page
-//           context.drawImage(annotationCanvas, 0, 0, annotationCanvas.width * scale, annotationCanvas.height * scale);
-
-//           // Convert the combined image to JPEG format with compression
-//           const imgData = pageCanvas.toDataURL('image/jpeg', 0.7); // JPEG with 70% quality
-
-//           // Calculate dimensions for PDF placement
-//           const pdfWidth = pdf.internal.pageSize.getWidth();
-//           const pdfHeight = pdf.internal.pageSize.getHeight();
-//           const imgProps = pdf.getImageProperties(imgData);
-//           const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
-//           const imgWidth = imgProps.width * ratio;
-//           const imgHeight = imgProps.height * ratio;
-//           const x = (pdfWidth - imgWidth) / 2;
-//           const y = (pdfHeight - imgHeight) / 2;
-
-//           // Add optimized image to PDF
-//           pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
-//           console.log(`Added page ${pageNumber} to PDF`);
-//       }
-
-//       // Convert PDF to Blob (file data)
-//       const pdfBlob = pdf.output('blob');
-
-//       // Create FormData to send with the request
-//       const formData = new FormData();
-//       formData.append('recordId', id); // Your record ID
-//       formData.append('filePath', pdfBlob, `annotated_document-${CrtNo}.pdf`); // Append PDF Blob
-
-//       // Upload the file to the server
-//       const response = await fetch('https://mcb.medicalcertificate.in/upload', {
-//           method: 'POST',
-//           body: formData,
-//       });
-
-//       // Check if the upload was successful
-//       if (response.ok) {
-//           console.log("PDF uploaded successfully");
-//           alert("PDF uploaded successfully");
-//       } else {
-//           console.error("Error uploading PDF");
-//           alert("Error uploading PDF. Please try again.");
-//       }
-
-//       // Reset button state
-//       saveBtn.innerHTML = originalText;
-//       saveBtn.disabled = false;
-//       document.body.style.cursor = 'default';
-
-//   } catch (error) {
-//       console.error("Error saving or uploading PDF:", error);
-//       alert("Error saving or uploading PDF. Please try again.");
-//       document.body.style.cursor = 'default';
-//       const saveBtn = document.getElementById('uploadPDF');
-//       saveBtn.innerHTML = '<i class="fas fa-upload"></i>';
-//       saveBtn.disabled = false;
-//   }
-// }
 
 
 // Add event listener for save button
-uploadPDFBtn.addEventListener('click', uploadAnnotatedPDF);
+uploadPDFBtn.addEventListener('click', (e) => {
+  console.log("submit");
+  
+e.preventDefault();
+  uploadAnnotatedPDF();
+});
 savePDFBtn.addEventListener('click', saveAnnotatedPDF);
 
 // Signature modal handlers
@@ -3090,205 +2989,6 @@ window.addEventListener("click", (e) => {
 
 });
 
-// // Preview PDF button handler
-// previewPDFBtn.addEventListener('click', async () => {
-//     try {
-//         showNotification("Generating preview...");
-//         previewModal.style.display = "block";
-//         previewContainer.innerHTML = ''; // Clear previous preview
-//         previewContainer.style.transform = `scale(1)`;;
-        
-//         // Get all pages and their content
-//         const pages = document.querySelectorAll('.page-wrapper');
-//         console.log(pages);
-        
-//         for (let i = 0; i < pages.length; i++) {
-//             const originalPage = pages[i];
-//             const pageNumber = i + 1;
-            
-//             // Create preview page container
-//             const previewPage = document.createElement('div');
-//             previewPage.className = 'page';
-//             previewPage.style.width = originalPage.style.width;
-//             previewPage.style.height = originalPage.style.height;
-            
-//             // Clone the canvas (PDF content)
-//             const originalCanvas = originalPage.querySelector('canvas');
-//             if (originalCanvas) {
-//                 const canvas = document.createElement('canvas');
-//                 canvas.width = originalCanvas.width;
-//                 canvas.height = originalCanvas.height;
-//                 const ctx = canvas.getContext('2d');
-//                 ctx.drawImage(originalCanvas, 0, 0);
-//                 previewPage.appendChild(canvas);
-//             }
-            
-//             // Clone annotation layer
-//             const originalAnnotationLayer = originalPage.querySelector('.annotation-layer');
-//             if (originalAnnotationLayer) {
-//                 const annotationLayer = originalAnnotationLayer.cloneNode(true);
-                
-//                 // Remove interactive elements from annotations
-//                 annotationLayer.querySelectorAll('.delete-btn, .rotate-btn, .resizer').forEach(el => {
-//                     el.remove();
-//                 });
-                
-//                 // Make annotations non-interactive
-//                 annotationLayer.querySelectorAll('.annotation-container').forEach(annotation => {
-//                     annotation.style.cursor = 'default';
-//                     annotation.style.pointerEvents = 'none';
-//                 });
-                
-//                 previewPage.appendChild(annotationLayer);
-//             }
-            
-//             previewContainer.appendChild(previewPage);
-//         }
-        
-       
-        
-//     } catch (error) {
-//         console.error('Preview generation failed:', error);
-//         showNotification("Failed to generate preview", 3000);
-//     }
-// });
-// Function to copy computed styles
-// function copyComputedStyles(sourceElement, targetElement) {
-//   const computedStyle = window.getComputedStyle(sourceElement);
-//   for (let i = 0; i < computedStyle.length; i++) {
-//       const prop = computedStyle[i];
-//       targetElement.style[prop] = computedStyle.getPropertyValue(prop);
-//   }
-// }
-
-// // Preview PDF button handler
-// previewPDFBtn.addEventListener('click', async () => {
-//   try {
-//       showNotification("Generating preview...");
-//       previewModal.style.display = "block";
-//       previewContainer.innerHTML = ''; // Clear previous preview
-//       previewContainer.style.transform = `scale(1)`;
-
-//       // Get all pages and their content
-//       const pages = Array.from(document.querySelectorAll('.page-wrapper'));
-
-//       console.log(`Processing ${pages.length} pages for preview...`);
-
-//       for (let i = 0; i < pages.length; i++) {
-//           const pageWrapper = pages[i];
-
-//           // Create preview page container
-//           const previewPage = document.createElement('div');
-//           previewPage.className = 'page';
-//           previewPage.style.width = pageWrapper.style.width;
-//           previewPage.style.height = pageWrapper.style.height;
-//           previewPage.style.position = 'relative'; // Ensure correct positioning context
-
-//           // Clone the canvas (PDF content)
-//           const originalCanvas = pageWrapper.querySelector('.pdf-canvas');
-//           if (originalCanvas) {
-//               const canvas = document.createElement('canvas');
-//               canvas.width = originalCanvas.width;
-//               canvas.height = originalCanvas.height;
-//               const ctx = canvas.getContext('2d');
-//               ctx.drawImage(originalCanvas, 0, 0);
-//               previewPage.appendChild(canvas);
-//           }
-
-//           // Clone annotation layer using html2canvas
-//           const originalAnnotationLayer = pageWrapper.querySelector('.annotation-layer');
-//           if (originalAnnotationLayer) {
-//               const scaleFactor = window.devicePixelRatio || 1;
-//               const annotationCanvas = await html2canvas(originalAnnotationLayer, {
-//                   backgroundColor: null,
-//                   scale: scaleFactor,
-//                   width: originalAnnotationLayer.offsetWidth * scaleFactor,
-//                   height: originalAnnotationLayer.offsetHeight * scaleFactor,
-//               });
-
-//               // Create an annotation image element
-//               const annotationImg = document.createElement('img');
-//               annotationImg.src = annotationCanvas.toDataURL('image/png');
-//               annotationImg.style.position = 'absolute';
-//               annotationImg.style.top = '0';
-//               annotationImg.style.left = '0';
-//               annotationImg.style.width = '100%';
-//               annotationImg.style.height = '100%';
-
-//               previewPage.appendChild(annotationImg);
-//           }
-
-//           previewContainer.appendChild(previewPage);
-//           console.log(`Preview page ${i + 1} generated.`);
-//       }
-
-//   } catch (error) {
-//       console.error('Preview generation failed:', error);
-//       showNotification("Failed to generate preview", 3000);
-//   }
-// });
-// Preview PDF button handler
-// previewPDFBtn.addEventListener('click', async () => {
-//   try {
-//       showNotification("Generating preview...");
-//       previewModal.style.display = "block";
-//       previewContainer.innerHTML = ''; // Clear previous preview
-//       previewContainer.style.transform = `scale(1)`;;
-      
-//       // Get all pages and their content
-//       const pages = document.querySelectorAll('.page-wrapper');
-//       console.log(pages);
-      
-//       for (let i = 0; i < pages.length; i++) {
-//           const originalPage = pages[i];
-//           const pageNumber = i + 1;
-          
-//           // Create preview page container
-//           const previewPage = document.createElement('div');
-//           previewPage.className = 'page';
-//           previewPage.style.width = originalPage.style.width;
-//           previewPage.style.height = originalPage.style.height;
-          
-//           // Clone the canvas (PDF content)
-//           const originalCanvas = originalPage.querySelector('canvas');
-//           if (originalCanvas) {
-//               const canvas = document.createElement('canvas');
-//               canvas.width = originalCanvas.width;
-//               canvas.height = originalCanvas.height;
-//               const ctx = canvas.getContext('2d');
-//               ctx.drawImage(originalCanvas, 0, 0);
-//               previewPage.appendChild(canvas);
-//           }
-          
-//           // Clone annotation layer
-//           const originalAnnotationLayer = originalPage.querySelector('.annotation-layer');
-//           if (originalAnnotationLayer) {
-//               const annotationLayer = originalAnnotationLayer.cloneNode(true);
-              
-//               // Remove interactive elements from annotations
-//               annotationLayer.querySelectorAll('.delete-btn, .rotate-btn, .resizer').forEach(el => {
-//                   el.remove();
-//               });
-              
-//               // Make annotations non-interactive
-//               annotationLayer.querySelectorAll('.annotation-container').forEach(annotation => {
-//                   annotation.style.cursor = 'default';
-//                   annotation.style.pointerEvents = 'none';
-//               });
-              
-//               previewPage.appendChild(annotationLayer);
-//           }
-          
-//           previewContainer.appendChild(previewPage);
-//       }
-      
-     
-      
-//   } catch (error) {
-//       console.error('Preview generation failed:', error);
-//       showNotification("Failed to generate preview", 3000);
-//   }
-// });
 // Preview PDF button handler
 previewPDFBtn.addEventListener('click', async () => {
   try {
@@ -3544,37 +3244,7 @@ colorPicker.addEventListener("change", () => {
   }
 });
 
-// Function to clear all annotations
-// function clearAllAnnotations() {
-//     const annotationLayers = document.querySelectorAll('.annotation-layer');
-    
-//     annotationLayers.forEach(layer => {
-//         const annotations = layer.querySelectorAll('.round-annotation, .cross-annotation, .rectangle-annotation');
-        
-//         annotations.forEach(annotation => {
-//             // Add fade-out animation
-//             annotation.style.transition = 'opacity 0.3s ease';
-//             annotation.style.opacity = '0';
-//         });
-        
-//         // Remove after animation
-//         setTimeout(() => {
-//             annotations.forEach(annotation => {
-//                 if (annotation.parentElement) {
-//                     annotation.parentElement.removeChild(annotation);
-//                 }
-//             });
-//             saveState();
-//         }, 300);
-//     });
-// }
 
-// Add event listener for clear all button
-// document.getElementById('clearAll').addEventListener('click', () => {
-//     if (confirm('Are you sure you want to delete all annotations?')) {
-//         clearAllAnnotations();
-//     }
-// });
 
 // Function to show notification
 function showNotification(message, duration = 5000) {
@@ -3589,48 +3259,4 @@ function showNotification(message, duration = 5000) {
 /////////////////////////////////////////////////
 import home from "../controllers/login.js";
 var UniqueID="";
-//////////////////----------home
-
-  // const signinForm = document.getElementById("signin-form");
-// const token = localStorage.getItem("token");
-// async function homefun(params) {
-//   try{
-  
-
-//   // // Hide the form and show the spinner
-//   // signinForm.style.display = "none";
-//   freaze.style.display = "flex";
-//   let resp = await home(params);
-//     console.log(resp);
-   
-//   if (resp.token) {
-// if(resp.uniqueId!=null&&resp.uniqueId!=""&&resp.status=="Active"){
-//    UniqueID+=resp.uniqueId;
-//    fetchAndLoadPDF();
-//   }
-// else{
-//   alert ("Your profile is inactive. Please contact the administrator.");
-//   window.location.href = "../sign_in.html";
-//   localStorage.removeItem("token");
-// }
-//   } else {
-//     alert("Invalid token");
-//     window.location.href = "../sign_in.html";
-//     localStorage.removeItem("token");
-//   }
-// }
-// catch(err){
-//   console.log(err);
-//   alert("Something went wrong");
-//   window.location.href = "../sign_in.html";
-//   localStorage.removeItem("token");
-// }
-
-// }
-// if (token) {
-//   homefun(token);
-// } else {
-//   window.location.href = "../sign_in.html";
-// }
-
   fetchAndLoadPDF();

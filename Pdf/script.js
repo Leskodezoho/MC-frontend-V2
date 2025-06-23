@@ -2788,7 +2788,7 @@ console.log( x, y, imgWidth, imgHeight)
         // const filename ='annotated_document-'+CrtNo+'.pdf';
         pdf.save(filename);
         console.log("PDF saved successfully");
-
+ window.close();
         // Reset button state
         saveBtn.innerHTML = originalText;
         saveBtn.disabled = false;

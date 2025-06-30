@@ -2760,209 +2760,345 @@ console.log( x, y, imgWidth, imgHeight)
         saveBtn.disabled = false;
     }
 }
-/////////////////high quality
-async function uploadAnnotatedPDF() {
+// /////////////////high quality
+// async function uploadAnnotatedPDF() {
    
-  try {
-      console.log("Starting PDF export...");
-      if (!currentPDF) {
-          console.error("No PDF loaded");
-          alert("Please load a PDF first");
-          return;
-      }
+//   try {
+//       console.log("Starting PDF export...");
+//       if (!currentPDF) {
+//           console.error("No PDF loaded");
+//           alert("Please load a PDF first");
+//           return;
+//       }
 
-      // Show loading state
-      document.body.style.cursor = 'wait';
-      const saveBtn = document.getElementById('uploadPDF');
-      const originalText = saveBtn.innerHTML;
-      saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-      saveBtn.disabled = true;
+//       // Show loading state
+//       document.body.style.cursor = 'wait';
+//       const saveBtn = document.getElementById('uploadPDF');
+//       const originalText = saveBtn.innerHTML;
+//       saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+//       saveBtn.disabled = true;
 
-      // Create a new jsPDF instance
-      // const pdf = new window.jsPDF();
-      const pdf = new window.jsPDF({
-          orientation: 'portrait',
-          unit: 'mm',
-          format: 'a4',
-          compress: true // Enables built-in compression
-      });
-      // Process each page
-      const pages = Array.from(pagesContainer.children);
-      console.log(`Processing ${pages.length} pages...`);
+//       // Create a new jsPDF instance
+//       // const pdf = new window.jsPDF();
+//       const pdf = new window.jsPDF({
+//           orientation: 'portrait',
+//           unit: 'mm',
+//           format: 'a4',
+//           compress: true // Enables built-in compression
+//       });
+//       // Process each page
+//       const pages = Array.from(pagesContainer.children);
+//       console.log(`Processing ${pages.length} pages...`);
 
-      for (let i = 0; i < pages.length; i++) {
-          const pageWrapper = pages[i];
-          const pageNumber = parseInt(pageWrapper.getAttribute('data-page'));
-          console.log(`Processing page ${pageNumber}`);
+//       for (let i = 0; i < pages.length; i++) {
+//           const pageWrapper = pages[i];
+//           const pageNumber = parseInt(pageWrapper.getAttribute('data-page'));
+//           console.log(`Processing page ${pageNumber}`);
 
-          // If not first page, add a new page to PDF
-          if (i > 0) {
-              pdf.addPage();
-          }
+//           // If not first page, add a new page to PDF
+//           if (i > 0) {
+//               pdf.addPage();
+//           }
 
-          // Get the canvas and annotation layer for this page
-          const canvas = pageWrapper.querySelector('.pdf-canvas');
-          const annotationLayer = pageWrapper.querySelector('.annotation-layer');
+//           // Get the canvas and annotation layer for this page
+//           const canvas = pageWrapper.querySelector('.pdf-canvas');
+//           const annotationLayer = pageWrapper.querySelector('.annotation-layer');
 
-          // First, draw the PDF page
-          const pageCanvas = document.createElement('canvas');
-          const context = pageCanvas.getContext('2d');
-          pageCanvas.width = canvas.width;
-          pageCanvas.height = canvas.height;
+//           // First, draw the PDF page
+//           const pageCanvas = document.createElement('canvas');
+//           const context = pageCanvas.getContext('2d');
+//           pageCanvas.width = canvas.width;
+//           pageCanvas.height = canvas.height;
 
-          // Draw the PDF page from the original canvas
-          context.drawImage(canvas, 0, 0);
+//           // Draw the PDF page from the original canvas
+//           context.drawImage(canvas, 0, 0);
 
-          // Use html2canvas to capture annotations
-          const scaleFactor = window.devicePixelRatio || 1;
-          const annotationCanvas = await html2canvas(annotationLayer, {
-              backgroundColor: null,
-              scale: scaleFactor,  // Ensure scaling matches high-res screens
-              width: annotationLayer.offsetWidth * scaleFactor,
-              height: annotationLayer.offsetHeight * scaleFactor,
-          });
+//           // Use html2canvas to capture annotations
+//           const scaleFactor = window.devicePixelRatio || 1;
+//           const annotationCanvas = await html2canvas(annotationLayer, {
+//               backgroundColor: null,
+//               scale: scaleFactor,  // Ensure scaling matches high-res screens
+//               width: annotationLayer.offsetWidth * scaleFactor,
+//               height: annotationLayer.offsetHeight * scaleFactor,
+//           });
           
-          // Draw annotations on top of the PDF
-          context.drawImage(annotationCanvas, 0, 0);
+//           // Draw annotations on top of the PDF
+//           context.drawImage(annotationCanvas, 0, 0);
 
-          // Add the combined image to the PDF
-          const imgData = pageCanvas.toDataURL('image/png');
-          const pdfWidth = pdf.internal.pageSize.getWidth();
-          const pdfHeight = pdf.internal.pageSize.getHeight();
-          const imgProps = pdf.getImageProperties(imgData);
-          const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
-          const imgWidth = imgProps.width * ratio;
-          const imgHeight = imgProps.height * ratio;
-          const x = (pdfWidth - imgWidth) / 2;
-          const y = (pdfHeight - imgHeight) / 2;
+//           // Add the combined image to the PDF
+//           const imgData = pageCanvas.toDataURL('image/png');
+//           const pdfWidth = pdf.internal.pageSize.getWidth();
+//           const pdfHeight = pdf.internal.pageSize.getHeight();
+//           const imgProps = pdf.getImageProperties(imgData);
+//           const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
+//           const imgWidth = imgProps.width * ratio;
+//           const imgHeight = imgProps.height * ratio;
+//           const x = (pdfWidth - imgWidth) / 2;
+//           const y = (pdfHeight - imgHeight) / 2;
 
-          pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
-          console.log(`Added page ${pageNumber} to PDF`);
-      }
+//           pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+//           console.log(`Added page ${pageNumber} to PDF`);
+//       }
 
-      // Convert PDF to Blob (file data)
-      const pdfBlob = pdf.output('blob');
+//       // Convert PDF to Blob (file data)
+//       const pdfBlob = pdf.output('blob');
 
-      // Create FormData to send with the request
-      const formData = new FormData();
-      // Your record ID
-      const now = new Date();
-const formattedDate = now.toLocaleString('en-GB', { 
-    year: '2-digit', 
-    month: '2-digit', 
-    day: '2-digit', 
-    hour: '2-digit', 
-    minute: '2-digit', 
-    second: '2-digit',
-    hour12: false 
-}).replace(/[/,: ]/g, '_');
-
-
-const filename = `annotated_document_${formattedDate}-${CrtNo}.pdf`;
-
-console.log("Uploading filename:", filename);
-
-// Make sure the blob is valid
-console.log(pdfBlob instanceof Blob); // should be true
-
-formData.append('filePath', pdfBlob, filename);
-
-try {
-  const response = await fetch(`https://mcb.medicalcertificate.in/uploadcrm/${id}`, {
-    method: 'POST',
-    body: formData
-  });
-
-  if (response.ok) {
-    console.log("PDF uploaded successfully");
-    alert("PDF uploaded successfully");
-    window.close();
-
-  } else {
-    const err = await response.text();
-    console.error("Upload failed:", err);
-    alert("Upload failed: " + err);
-  }
-} catch (error) {
-  console.error("Network error:", error);
-  alert("Network error upload: " + error.message);
-}
-
-
-// const formData = new FormData();
-// const now = new Date();
+//       // Create FormData to send with the request
+//       const formData = new FormData();
+//       // Your record ID
+//       const now = new Date();
 // const formattedDate = now.toLocaleString('en-GB', { 
-//   year: '2-digit', 
-//   month: '2-digit', 
-//   day: '2-digit', 
-//   hour: '2-digit', 
-//   minute: '2-digit', 
-//   second: '2-digit',
-//   hour12: false 
+//     year: '2-digit', 
+//     month: '2-digit', 
+//     day: '2-digit', 
+//     hour: '2-digit', 
+//     minute: '2-digit', 
+//     second: '2-digit',
+//     hour12: false 
 // }).replace(/[/,: ]/g, '_');
+
 
 // const filename = `annotated_document_${formattedDate}-${CrtNo}.pdf`;
 
 // console.log("Uploading filename:", filename);
-// console.log(pdfBlob instanceof Blob); // Should be true
+
+// // Make sure the blob is valid
+// console.log(pdfBlob instanceof Blob); // should be true
 
 // formData.append('filePath', pdfBlob, filename);
 
 // try {
-//   axios.post(
-//     `https://mcb.medicalcertificate.in/uploadcrm/${id}`,
-//     formData,
-//     {
-//       headers: {
-//         'Content-Type': 'multipart/form-data',
-//       },
-      
-//     }
-//   ).then(function (response) {
-//       console.log("PDF uploaded successfully:", response.data);
-//   alert("PDF uploaded successfully");
-//   })
-//   .catch(function (error) {
-//     console.log(error);
+//   const response = await fetch(`https://mcb.medicalcertificate.in/uploadcrm/${id}`, {
+//     method: 'POST',
+//     body: formData
 //   });
 
+//   if (response.ok) {
+//     console.log("PDF uploaded successfully");
+//     alert("PDF uploaded successfully");
+//     window.close();
 
-// window.close();
-// } catch (error) {
-//   if (error.response) {
-//     // Server responded with a status other than 2xx
-//     console.error("Upload failed:", error.response.data);
-//     alert("Upload failed: " + (error.response.data?.message || "Server error"));
-//   } else if (error.request) {
-//     // No response from server
-//     console.error("No response from server:", error.request);
-//     alert("No response from server");
 //   } else {
-//     // Something else went wrong
-//     console.error("Error setting up request:", error.message);
-//     alert("Upload error: " + error.message);
+//     const err = await response.text();
+//     console.error("Upload failed:", err);
+//     alert("Upload failed: " + err);
 //   }
+// } catch (error) {
+//   console.error("Network error:", error);
+//   alert("Network error upload: " + error.message);
 // }
 
 
-      // Reset button state
-      saveBtn.innerHTML = originalText;
-      saveBtn.disabled = false;
-      document.body.style.cursor = 'default';
+// // const formData = new FormData();
+// // const now = new Date();
+// // const formattedDate = now.toLocaleString('en-GB', { 
+// //   year: '2-digit', 
+// //   month: '2-digit', 
+// //   day: '2-digit', 
+// //   hour: '2-digit', 
+// //   minute: '2-digit', 
+// //   second: '2-digit',
+// //   hour12: false 
+// // }).replace(/[/,: ]/g, '_');
+
+// // const filename = `annotated_document_${formattedDate}-${CrtNo}.pdf`;
+
+// // console.log("Uploading filename:", filename);
+// // console.log(pdfBlob instanceof Blob); // Should be true
+
+// // formData.append('filePath', pdfBlob, filename);
+
+// // try {
+// //   axios.post(
+// //     `https://mcb.medicalcertificate.in/uploadcrm/${id}`,
+// //     formData,
+// //     {
+// //       headers: {
+// //         'Content-Type': 'multipart/form-data',
+// //       },
+      
+// //     }
+// //   ).then(function (response) {
+// //       console.log("PDF uploaded successfully:", response.data);
+// //   alert("PDF uploaded successfully");
+// //   })
+// //   .catch(function (error) {
+// //     console.log(error);
+// //   });
+
+
+// // window.close();
+// // } catch (error) {
+// //   if (error.response) {
+// //     // Server responded with a status other than 2xx
+// //     console.error("Upload failed:", error.response.data);
+// //     alert("Upload failed: " + (error.response.data?.message || "Server error"));
+// //   } else if (error.request) {
+// //     // No response from server
+// //     console.error("No response from server:", error.request);
+// //     alert("No response from server");
+// //   } else {
+// //     // Something else went wrong
+// //     console.error("Error setting up request:", error.message);
+// //     alert("Upload error: " + error.message);
+// //   }
+// // }
+
+
+//       // Reset button state
+//       saveBtn.innerHTML = originalText;
+//       saveBtn.disabled = false;
+//       document.body.style.cursor = 'default';
+
+//   } catch (error) {
+//     console.log(error);
+    
+//       console.error("Error saving or uploading PDF:", error);
+//       alert("Error saving or uploading PDF. Please try again.");
+//       document.body.style.cursor = 'default';
+//       const saveBtn = document.getElementById('uploadPDF');
+//       saveBtn.innerHTML = '<i class="fas fa-upload"></i>';
+//       saveBtn.disabled = false;
+//   }
+// }
+
+async function uploadAnnotatedPDF() {
+  try {
+    console.log("Starting PDF export...");
+    if (!currentPDF) {
+      console.error("No PDF loaded");
+      alert("Please load a PDF first");
+      return;
+    }
+
+    // Show loading state
+    document.body.style.cursor = 'wait';
+    const saveBtn = document.getElementById('uploadPDF');
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+    saveBtn.disabled = true;
+
+    // Initialize jsPDF
+    const pdf = new window.jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+      compress: true
+    });
+
+    const pages = Array.from(pagesContainer.children);
+    console.log(`Processing ${pages.length} pages...`);
+
+    for (let i = 0; i < pages.length; i++) {
+      const pageWrapper = pages[i];
+      const pageNumber = parseInt(pageWrapper.getAttribute('data-page'));
+      console.log(`Processing page ${pageNumber}`);
+
+      if (i > 0) {
+        pdf.addPage();
+      }
+
+      const canvas = pageWrapper.querySelector('.pdf-canvas');
+      const annotationLayer = pageWrapper.querySelector('.annotation-layer');
+
+      // Combine base canvas and annotation layer
+      const baseCanvas = document.createElement('canvas');
+      baseCanvas.width = canvas.width;
+      baseCanvas.height = canvas.height;
+      const baseCtx = baseCanvas.getContext('2d');
+
+      baseCtx.drawImage(canvas, 0, 0);
+
+      const scaleFactor = window.devicePixelRatio || 1;
+      const annotationCanvas = await html2canvas(annotationLayer, {
+        backgroundColor: null,
+        scale: scaleFactor,
+        width: annotationLayer.offsetWidth * scaleFactor,
+        height: annotationLayer.offsetHeight * scaleFactor,
+      });
+
+      baseCtx.drawImage(annotationCanvas, 0, 0);
+
+      // Downscale final canvas before adding to PDF
+      const scaleDown = 1; // Change to 0.3–0.7 for size vs. quality
+      const scaledCanvas = document.createElement('canvas');
+      scaledCanvas.width = baseCanvas.width * scaleDown;
+      scaledCanvas.height = baseCanvas.height * scaleDown;
+      const scaledCtx = scaledCanvas.getContext('2d');
+      scaledCtx.drawImage(baseCanvas, 0, 0, scaledCanvas.width, scaledCanvas.height);
+
+      const imgData = scaledCanvas.toDataURL('image/jpeg', 0.7); // JPEG + quality 0.7
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgProps = pdf.getImageProperties(imgData);
+      const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
+      const imgWidth = imgProps.width * ratio;
+      const imgHeight = imgProps.height * ratio;
+      const x = (pdfWidth - imgWidth) / 2;
+      const y = (pdfHeight - imgHeight) / 2;
+
+      pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
+      console.log(`Added page ${pageNumber} to PDF`);
+    }
+
+    // Convert to Blob
+    const pdfBlob = pdf.output('blob');
+
+    // Create FormData
+    const formData = new FormData();
+    formData.append('recordId', id);
+
+    const now = new Date();
+    const formattedDate = now.toLocaleString('en-GB', {
+      year: '2-digit',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }).replace(/[/,: ]/g, '_');
+        let filename = `annotated_document_${formattedDate}.pdf`;
+    if(CrtNo!=null){
+
+
+     filename = `${CrtNo}.pdf`;
+    }
+
+    // const filename = `annotated_document_${formattedDate}-${CrtNo}.pdf`;
+    console.log(filename);
+
+    formData.append('filePath', pdfBlob, filename);
+
+    // Upload to server
+    const response = await fetch(`https://mcb.medicalcertificate.in/uploadcrm/${id}`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      console.log("PDF uploaded successfully");
+      alert("PDF uploaded successfully");
+    } else {
+      console.error("Error uploading PDF");
+      alert("Error uploading PDF. Please try again.");
+    }
+
+    // Reset UI
+    saveBtn.innerHTML = originalText;
+    saveBtn.disabled = false;
+    document.body.style.cursor = 'default';
 
   } catch (error) {
-    console.log(error);
-    
-      console.error("Error saving or uploading PDF:", error);
-      alert("Error saving or uploading PDF. Please try again.");
-      document.body.style.cursor = 'default';
-      const saveBtn = document.getElementById('uploadPDF');
-      saveBtn.innerHTML = '<i class="fas fa-upload"></i>';
-      saveBtn.disabled = false;
+    console.error("Error saving or uploading PDF:", error);
+    alert("Error saving or uploading PDF. Please try again.");
+    document.body.style.cursor = 'default';
+    const saveBtn = document.getElementById('uploadPDF');
+    saveBtn.innerHTML = '<i class="fas fa-upload"></i>';
+    saveBtn.disabled = false;
   }
 }
-
-
 // Add event listener for save button
 uploadPDFBtn.addEventListener('click', (e) => {
   console.log("submit");

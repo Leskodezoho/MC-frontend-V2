@@ -3080,6 +3080,7 @@ async function uploadAnnotatedPDF() {
     if (response.ok) {
       console.log("PDF uploaded successfully");
       alert("PDF uploaded successfully");
+      window.close();
     } else {
       console.error("Error uploading PDF");
       alert("Error uploading PDF. Please try again.");

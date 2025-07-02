@@ -51,17 +51,9 @@ const CrtNo = params.get('CrtNo');
 const sl_sign = params.get('slsn');
 const seal = params.get('sl');
 const sign = params.get('sn');
-    const formattedDate = now.toLocaleString('en-GB', {
-      year: '2-digit',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    }).replace(/[/,: ]/g, '_');
 
-let filename = `Document-${formattedDate}.pdf`;
+
+let filename = `Document.pdf`;
     if(CrtNo!=null){
      filename = `${CrtNo}.pdf`;
     }
@@ -2741,15 +2733,7 @@ console.log( x, y, imgWidth, imgHeight)
             console.log(`Added page ${pageNumber} to PDF`);
         }
         const now = new Date();
-        const formattedDate = now.toLocaleString('en-GB', { 
-          year: '2-digit', 
-          month: '2-digit', 
-          day: '2-digit', 
-          hour: '2-digit', 
-          minute: '2-digit', 
-          second: '2-digit',
-          hour12: false 
-      }).replace(/[/,: ]/g, '_');
+       
       
  
       

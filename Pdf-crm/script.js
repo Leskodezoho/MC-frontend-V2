@@ -51,7 +51,20 @@ const CrtNo = params.get('CrtNo');
 const sl_sign = params.get('slsn');
 const seal = params.get('sl');
 const sign = params.get('sn');
+    const formattedDate = now.toLocaleString('en-GB', {
+      year: '2-digit',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }).replace(/[/,: ]/g, '_');
 
+let filename = `Document-${formattedDate}.pdf`;
+    if(CrtNo!=null){
+     filename = `${CrtNo}.pdf`;
+    }
 const assetsContainer = document.querySelector('.assets');
 
 function createButton(idValue) {
@@ -2738,11 +2751,10 @@ console.log( x, y, imgWidth, imgHeight)
           hour12: false 
       }).replace(/[/,: ]/g, '_');
       
-      const filename = `annotated_document_${formattedDate}-${CrtNo}.pdf`;
+ 
       
       console.log(filename);
-        // // Save the PDF
-        // const filename ='annotated_document-'+CrtNo+'.pdf';
+
         pdf.save(filename);
         console.log("PDF saved successfully");
 
@@ -3050,23 +3062,9 @@ async function uploadAnnotatedPDF() {
     formData.append('recordId', id);
 
     const now = new Date();
-    const formattedDate = now.toLocaleString('en-GB', {
-      year: '2-digit',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    }).replace(/[/,: ]/g, '_');
-        let filename = `annotated_document_${formattedDate}.pdf`;
-    if(CrtNo!=null){
 
 
-     filename = `${CrtNo}.pdf`;
-    }
-
-    // const filename = `annotated_document_${formattedDate}-${CrtNo}.pdf`;
+    
     console.log(filename);
 
     formData.append('filePath', pdfBlob, filename);
